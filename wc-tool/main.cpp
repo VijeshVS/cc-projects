@@ -11,48 +11,13 @@ using namespace std;
 class CommandDispatcher {
     public:
     virtual void dispatch(const vector<string>& args) = 0;
+    virtual ~CommandDispatcher() = default;
 };
 
 class CommandExecutor {
     public:
     virtual void execute(vector<string> args) = 0;
     virtual ~CommandExecutor() = default;
-};
-
-// Factories
-
-class CommandExecutorFactory {
-    public:
-    static CommandExecutor* getExecutor(const string& flag) {
-        // Byte counter
-        if (flag == "-c") {
-            return new ByteCounter();
-        }
-        // Line counter
-        else if(flag == "-l") {
-            return new LineCounter();
-        }
-        // WordCounter
-        else if(flag == "-w"){
-            return new WordCounter();
-        }
-        // Character Counter
-        else if(flag == "-m"){
-            return new ByteCounter();
-        }
-        return nullptr;
-    }
-};
-
-class CommandDispatcherFactory {
-    public:
-    static CommandDispatcher* getDispatcher(const string& name){
-        if(name == "wc"){
-            return new wcDispatcher();
-        }
-
-        return nullptr;
-    }
 };
 
 // Parses/Utitlity class
@@ -164,6 +129,52 @@ class WordCounter : public CommandExecutor {
     }
 };
 
+class CharacterCounter : public CommandExecutor {
+    public:
+    void execute(vector<string> args) override {
+        ifstream file(args[0], ios::binary);
+        if (!file.is_open()) {
+            cerr << "[File not found] " << args[0] << endl;
+            return;
+        }
+
+        long long cnt = 0;
+        char ch;
+        while (file.get(ch)) {
+            cnt++;
+        }
+
+        cout << cnt << " " << args[0] << endl;
+        file.close();
+    }
+};
+
+// Factories
+
+class CommandExecutorFactory {
+    public:
+    static CommandExecutor* getExecutor(const string& flag) {
+        // Byte counter
+        if (flag == "-c") {
+            return new ByteCounter();
+        }
+        // Line counter
+        else if(flag == "-l") {
+            return new LineCounter();
+        }
+        // WordCounter
+        else if(flag == "-w"){
+            return new WordCounter();
+        }
+        // Character Counter
+        else if(flag == "-m"){
+            return new CharacterCounter();
+        }
+        return nullptr;
+    }
+};
+
+
 // Command Dispatcher : Concrete classes
 
 class wcDispatcher : public CommandDispatcher {
@@ -199,6 +210,17 @@ class wcDispatcher : public CommandDispatcher {
                 cout << "[Invalid flag] " << args[0] << endl;
             }
         }
+    }
+};
+
+class CommandDispatcherFactory {
+    public:
+    static CommandDispatcher* getDispatcher(const string& name){
+        if(name == "wc"){
+            return new wcDispatcher();
+        }
+
+        return nullptr;
     }
 };
 
