@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cctype>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -183,6 +185,10 @@ class wcDispatcher : public CommandDispatcher {
                 wordCounter->execute(args);
                 lineCounter->execute(args);
             }
+
+            delete byteCounter;
+            delete wordCounter;
+            delete lineCounter;
         }
         else {
             CommandExecutor* executor = CommandExecutorFactory::getExecutor(args[0]);
@@ -204,7 +210,7 @@ int main(){
 
     if(args.size() < 2){
         cout << "[Invalid Command] " << cmd << endl;
-        return 0;
+        return 1;
     }
 
     // get the dispatcher
@@ -215,4 +221,7 @@ int main(){
     else {
         cout << "[Command not found] " << cmd << endl;
     }
+
+    delete dispatcher;
+    return 0;
 }
