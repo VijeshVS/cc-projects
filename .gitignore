@@ -1,0 +1,12 @@
+a.out
+ccwc
+*.o
+*.obj
+*.so
+*.exe
+*.dll
+*.class
+*.pyc
+*.pyo
+*.pyd
+*.jar
