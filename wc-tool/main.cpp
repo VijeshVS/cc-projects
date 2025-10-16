@@ -70,8 +70,10 @@ int main(int argc, char *argv[]){
         else if(flag == 'c') showBytes = true;
     }
 
+    int filesStart = (argc > 1 && argv[1][0] == '-') ? 2 : 1;
+    
     vector<string> files;
-    for(int i = 2;i<argc;i++){
+    for(int i = filesStart;i<argc;i++){
         files.push_back(argv[i]);
     }
 
